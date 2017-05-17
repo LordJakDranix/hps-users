@@ -24,9 +24,9 @@
             <outputFileName>${outputFile}</outputFileName>
         </driver>
 
-        <driver name="MuonCandidateMonitoringGBL" type="org.hps.analysis.dataquality.MuonCandidateMonitoring">
-            <triggerType>all</triggerType>
-            <isGBL>true</isGBL>
+        <driver name="MuonCandidateMonitoringGBL" type="org.hps.users.spaul.dimuon.DimuonGraphsDriver">
+            <!-- <triggerType>all</triggerType>
+            <isGBL>true</isGBL> -->
         </driver>
 
         <driver name="CleanupDriver" type="org.lcsim.recon.tracking.digitization.sisim.config.ReadoutCleanupDriver"/>
