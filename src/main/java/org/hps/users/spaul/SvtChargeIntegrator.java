@@ -277,7 +277,7 @@ public class SvtChargeIntegrator {
 					        svtTimingConstants = null;
 					    }
 					    if (svtTimingConstants != null) {
-						    if (svtTimingConstants.getOffsetTime() > 27) {
+						    if (svtTimingConstants.getOffsetTime() > 35) {
 							    efficiency *= 2.0 / 3.0; // bad latency: drop 2 out of 6 trigger phases
 						    }// otherwise, we have good latency
 					    } else {
