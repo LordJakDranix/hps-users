@@ -54,9 +54,10 @@ public class SvtChargeIntegrator {
 		options.addOption(new Option("r", false, "use per-run CSV log file (default is per-file)"));
 		options.addOption(new Option("t", false, "use TI timestamp instead of Unix time (higher precision, but requires TI time offset in run DB)"));
 		options.addOption(new Option("c", false, "get TI time offset from CSV log file instead of run DB"));
-		options.addOption(new Option("e", true, "header error file"));
-		options.addOption(new Option("d", false, "use 0.5 as the nominal svt position (rather than look in run DB for it)"));
+		options.addOption(new Option("e", true,  "header error file"));
+		options.addOption(new Option("d", false, "use 0.5 as the nominal svt position (rather than look in conditions DB for it)"));
 		options.addOption(new Option("z", true, "use zeropoint value from a file"));
+		options.addOption(new Option("a", true, "attenuation scale"));
 		options.addOption(new Option("b", true, "burstmode noise efficiency"));
 		options.addOption(new Option("l", false, "don't look up latency values from database."));
         
@@ -74,6 +75,10 @@ public class SvtChargeIntegrator {
 		boolean useCrawlerTI = cl.hasOption("c");
 		boolean useDefaultNominalSvtPos = cl.hasOption("d");
 		
+		Double attenuation = 1.;
+		if(cl.hasOption("a")){
+		    attenuation = Double.parseDouble(cl.getOptionValue("a"));
+		}
 		Map<Integer, Long> runErrorMap = new HashMap<Integer, Long>();
 		if (cl.hasOption("e")) {
 			try {
@@ -101,7 +106,6 @@ public class SvtChargeIntegrator {
 				String line;
 				System.err.println("zero point file header: " + br.readLine()); //discard the first line
 				double zeropoint = 0;
-				double attenuation = 0;
 				while ((line = br.readLine()) != null) {
 					String arr[] = line.split("[ \t]+");
 					int run = Integer.parseInt(arr[0]);
@@ -110,9 +114,9 @@ public class SvtChargeIntegrator {
 					// use the zeropoint of the previous run
 					if(Double.parseDouble(arr[1]) != 0)
 						zeropoint = Double.parseDouble(arr[1]);
-					if(arr[2].equals("NaN"))
-						attenuation = Double.NaN;
-					else attenuation = Double.parseDouble(arr[2]);
+					//if(arr[2].equals("NaN"))
+					//	attenuation = Double.NaN;
+					//else attenuation = Double.parseDouble(arr[2]);
 					
 					zeropointMap.put(run, zeropoint);
 					attenuationMap.put(run, attenuation);
@@ -209,7 +213,7 @@ public class SvtChargeIntegrator {
 					}
 				}
 				double zeropoint = zeropointMap.containsKey(runNum) ? zeropointMap.get(runNum) : 0;
-				double attenuation = attenuationMap.containsKey(runNum) ? attenuationMap.get(runNum) : 1;
+				attenuation = attenuationMap.containsKey(runNum) ? attenuationMap.get(runNum) : 1;
 				
 				if (runNum != currentRun) {
 					if (useTI && !useCrawlerTI) {
@@ -369,7 +373,7 @@ public class SvtChargeIntegrator {
 					} else {
 						livetime = Math.min(100.0, Math.max(0.0, Double.parseDouble(arr[3]))) / 100.0;
 					}
-
+					
 					boolean biasGood = false;
 					boolean positionGood = false;
 					SvtBiasConstant biasConstant = null;
@@ -388,7 +392,7 @@ public class SvtChargeIntegrator {
 						if (positionConstant == null && lastDate != null) {
 							positionConstant = svtPositionConstants.find(lastDate);
 						}
-						if (positionConstant != null && alignmentConstants != null) {
+						if (positionConstant != null && (alignmentConstants != null || useDefaultNominalSvtPos)) {
 							//                    System.out.format("%f %f %f %f\n", positionConstant.getBottom(), nominalAngleBottom, positionConstant.getTop(), nominalAngleTop);
 							if (Math.abs(positionConstant.getBottom() - nominalAngleBottom) < angleTolerance && Math.abs(positionConstant.getTop() - nominalAngleTop) < angleTolerance) {
 								positionGood = true;
@@ -425,8 +429,13 @@ public class SvtChargeIntegrator {
 						
 						// you should only use the attenuation and zeropoint file when using scalerS2b.
 						// if no file is specified, then attenuation = 1 and zeropoint = 0.
-						double current = (thisCurrent -zeropoint)/attenuation;
+						double current = (thisCurrent -zeropoint)/906.2;
 						
+						if(current*attenuation<1000){ 
+						    // during the time when the beam blocker was removed,
+						    // do not correct for attenuation. 
+						    current*=attenuation;
+						}
 						
 						totalCharge += dt * current; // nC
 						totalGatedCharge += dt * current * livetime;
