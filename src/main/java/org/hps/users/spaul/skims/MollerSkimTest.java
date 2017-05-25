@@ -47,8 +47,17 @@ public class MollerSkimTest extends EventReconFilter{
         this.twoClusterCuts = val;
     }
     
+    public void setSumPMax(double val){
+        this.trackPMax = val;
+    }
+    public void setSumPMin(double val){
+        this.trackPMin = val;
+    }
+    
     double trackPMin = 0;
     double trackPMax = 1.9;
+    double sumPMax = 100;
+    double sumPMin = 0;
     double xSumMax = 0;
     double xSumMin = -190; //only an xSum min cut is needed for the skim
     double xClusterMax = 0;
@@ -65,6 +74,8 @@ public class MollerSkimTest extends EventReconFilter{
 
 
         List<Cluster> clusters = event.get(Cluster.class, clusterCollectionName);
+        
+        
         if(twoClusterCuts){
             boolean foundPair = false;
             outer : for(Cluster c1 : clusters){
@@ -102,7 +113,7 @@ public class MollerSkimTest extends EventReconFilter{
                 continue;
             double p1 = mol.getParticles().get(0).getMomentum().magnitude();
             double p2 = mol.getParticles().get(1).getMomentum().magnitude();
-            if(p1 >trackPMin && p1<trackPMax && p2 > trackPMin && p2 < trackPMax)
+            if(p1 >trackPMin && p1<trackPMax && p2 > trackPMin && p2 < trackPMax && p1 + p2 < sumPMax && p1 + p2 > sumPMin)
                 found = true;
             
         }
