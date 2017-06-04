@@ -48,10 +48,10 @@ public class MollerSkimTest extends EventReconFilter{
     }
     
     public void setSumPMax(double val){
-        this.trackPMax = val;
+        this.sumPMax = val;
     }
     public void setSumPMin(double val){
-        this.trackPMin = val;
+        this.sumPMin = val;
     }
     
     double trackPMin = 0;
