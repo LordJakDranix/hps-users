@@ -60,6 +60,7 @@
         <driver name="LCIOWriter"/>
         <driver name="CleanupDriver"/>
         <driver name="ReconDiagnosticsDriver"/>
+        <driver name="AidaSaveDriver"/>
     </execute>    
     <drivers>    
         <driver name="EventMarkerDriver" type="org.lcsim.job.EventMarkerDriver">
@@ -148,7 +149,7 @@
             <outputFileName>${outputFile}.root</outputFileName>
         </driver> 
         <driver name="ReconDiagnosticsDriver" type="org.hps.recon.utils.ReconDiagnosticsDriver">
-        	<debug>true</debug>
+        	
         </driver>        
     </drivers>
 </lcsim>
