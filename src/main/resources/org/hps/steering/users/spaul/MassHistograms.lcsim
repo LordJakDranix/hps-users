@@ -8,7 +8,7 @@
     <execute>
         <driver name="EventMarkerDriver"/>
          <driver name="TriggerFilter"/>
-         <driver name="RewriteFlagsDriver"/>
+         <!-- <driver name="RewriteFlagsDriver"/> -->
          <driver name="EventFlagFilter"/>
         <driver name="RawTrackerHitSensorSetup"/>
         <driver name="MassHistograms"/>
@@ -20,7 +20,7 @@
         </driver>
         
         <driver name="TriggerFilter" type="org.hps.recon.filtering.Pair1TriggerFilterDriver"/>
-        <driver name="RewriteFlagsDriver" type = "org.hps.users.spaul.RewriteFlagsDriver" />
+        <!-- <driver name="RewriteFlagsDriver" type = "org.hps.users.spaul.RewriteFlagsDriver" /> -->
         
         <driver name="EventFlagFilter" type="org.hps.recon.filtering.EventFlagFilter">
         	<!-- All flags except for the latency flag -->

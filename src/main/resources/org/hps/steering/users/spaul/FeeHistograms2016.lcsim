@@ -7,7 +7,7 @@
     </control>
     <execute>
         <driver name="EventMarkerDriver"/>
-        <driver name="RewriteFlagsDriver"/>
+        <!-- <driver name="RewriteFlagsDriver"/> -->
         <driver name="EventFlagFilter"/>
         <!-- <driver name="TriggerFilter"/>-->
         <driver name="FeeHistograms"/>
@@ -19,10 +19,10 @@
         </driver>
         
          <driver name="TriggerFilter" type="org.hps.recon.filtering.Single1TriggerFilterDriver"/>
-        <driver name="RewriteFlagsDriver" type = "org.hps.users.spaul.RewriteFlagsDriver" />
+        <!--  --><driver name="RewriteFlagsDriver" type = "org.hps.users.spaul.RewriteFlagsDriver" /> -->
         
         <driver name="EventFlagFilter" type="org.hps.recon.filtering.EventFlagFilter">
-        	<!-- All flags except for the position flag -->
+        	<!-- All flags except for the latency flag -->
         	<flagNames>svt_bias_good svt_burstmode_noise_good svt_event_header_good svt_position_good</flagNames>
         </driver>
        
