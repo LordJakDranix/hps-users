@@ -9,6 +9,11 @@
         <driver name="EventMarkerDriver"/>
         <driver name="EventFlagFilter"/>
         <driver name="TriggerFilter"/>
+        
+         <!-- Rerun recon particle driver-->
+        <driver name="TrackTweakDriver" />
+        <driver name="ReconParticleDriver" />
+        
         <driver name="FeeHistograms"/>
         <driver name="FeeHistogramsTight"/>
         <driver name="FeeHistogramsLoose"/>
@@ -26,7 +31,36 @@
         	<flagNames>svt_bias_good svt_burstmode_noise_good svt_event_header_good svt_position_good</flagNames>
         </driver>
        
-        
+        <driver name="TrackTweakDriver"    type="org.hps.recon.tracking.TrackTweakDriver" >
+            <topOmegaCorrection>0</topOmegaCorrection>
+            <botOmegaCorrection>0</botOmegaCorrection>
+            <topLambdaCorrection>0</topLambdaCorrection>
+            <botLambdaCorrection>0</botLambdaCorrection>
+            <topPhiCorrection>0</topPhiCorrection>
+            <botPhiCorrection>0</botPhiCorrection>
+            <topZ0Correction>0</topZ0Correction>
+            <botZ0Correction>0</botZ0Correction>
+            <removeCollections>
+                FinalStateParticles
+                UnconstrainedV0Candidates 
+                UnconstrainedV0Vertices
+                UnconstrainedMollerCandidates 
+                UnconstrainedMollerVertices
+                TargetConstrainedV0Candidates 
+                TargetConstrainedV0Vertices
+                TargetConstrainedMollerCandidates 
+                TargetConstrainedMollerVertices
+                BeamspotConstrainedV0Candidates 
+                BeamspotConstrainedV0Vertices
+                BeamspotConstrainedMollerCandidates 
+                BeamspotConstrainedMollerVertices
+            </removeCollections>
+        </driver> 
+        <driver name="ReconParticleDriver" type="org.hps.recon.particle.HpsReconParticleDriver" > 
+            <ecalClusterCollectionName>EcalClustersCorr</ecalClusterCollectionName>        
+            <trackCollectionNames>GBLTracks</trackCollectionNames>
+            <disablePID>true</disablePID>
+        </driver>
        	<driver name="FeeHistograms" type="org.hps.users.spaul.fee.FeeHistogramDriver">
        		<binning>24
 1 0.0400 0.0450 1.0100 2.1300 
