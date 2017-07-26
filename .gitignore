@@ -1,1 +1,6 @@
-/target
+target
+
+.classpath
+.m2repo
+.project
+.settings
