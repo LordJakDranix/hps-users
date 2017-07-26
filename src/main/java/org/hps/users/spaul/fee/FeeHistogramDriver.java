@@ -28,6 +28,7 @@ import static java.lang.Math.*;
 
 
 public class FeeHistogramDriver extends Driver{
+    public String folder = null;
     private static final double amu = 0.931494095;
     private static final double  Mcarbon = amu*12;
     private static final double Mtungsten = amu*183.84;
@@ -56,6 +57,7 @@ public class FeeHistogramDriver extends Driver{
 
     //determined by beam energy
     double eMin, eMax, beamEnergy, seedEnergyCut;
+    double eMaxFrac = 1.15, eMinFrac = .85;
 
     boolean _useSSPcut = false;
     public void setUseSSPcut(boolean val){
@@ -75,20 +77,20 @@ public class FeeHistogramDriver extends Driver{
     }
 
 
-    public void setEMin(double val){
-        this.eMin = val;
+    public void setEMinFrac(double val){
+        this.eMinFrac = val;
     }
 
     public void setEMax(double val){
-        this.eMax = val;
+        this.eMaxFrac = val;
     }
     
     public void setPMin(double val){
-        this.pMin = val;
+        this.pMinFrac = val;
     }
 
     public void setPMax(double val){
-        this.pMax = val;
+        this.pMaxFrac = val;
     }
 
     
@@ -100,6 +102,7 @@ public class FeeHistogramDriver extends Driver{
         this.seedEnergyCutFrac = seedEnergyCut;
     }
 
+    double pMinFrac = .75, pMaxFrac = 1.25;
     double pMin, pMax;
 
 
@@ -135,11 +138,11 @@ public class FeeHistogramDriver extends Driver{
         BeamEnergyCollection beamEnergyCollection = 
                 this.getConditionsManager().getCachedConditions(BeamEnergyCollection.class, "beam_energies").getCachedData();        
         beamEnergy = beamEnergyCollection.get(0).getBeamEnergy();
-        eMin = .85*beamEnergy;
-        eMax = 1.15*beamEnergy;
+        eMin = eMinFrac*beamEnergy;
+        eMax = eMaxFrac*beamEnergy;
 
-        pMin = .75*beamEnergy;
-        pMax = 1.25*beamEnergy;
+        pMin = pMinFrac*beamEnergy;
+        pMax = pMinFrac*beamEnergy;
 
         seedEnergyCut = seedEnergyCutFrac *beamEnergy; 
         setupHistograms();
@@ -192,21 +195,21 @@ public class FeeHistogramDriver extends Driver{
         this.sspEnergy = aida.histogram1D("ssp clusters energy", 100, 0, 1.5*beamEnergy);
         this.sspTime = aida.histogram1D("ssp clusters time", 200, 0, 200);
 
-        energy = aida.histogram1D("cluster energy", 100, 0, 1.5*beamEnergy);
-        energyTop = aida.histogram1D("cluster energy top", 100, 0, 1.5*beamEnergy);
-        energyBottom = aida.histogram1D("cluster energy bottom", 100, 0, 1.5*beamEnergy);
+        energy = aida.histogram1D(prependFolderName("cluster energy"), 100, 0, 1.5*beamEnergy);
+        energyTop = aida.histogram1D(prependFolderName("cluster energy top"), 100, 0, 1.5*beamEnergy);
+        energyBottom = aida.histogram1D(prependFolderName("cluster energy bottom"), 100, 0, 1.5*beamEnergy);
 
         //clusterEnergyFidEcal = aida.histogram1D("cluster energy fid ecal", 100, 0, 1.5*beamEnergy);
 
-        clusterEnergyFidTrack = aida.histogram1D("cluster energy fid track", 100, 0, 1.5*beamEnergy);
+        clusterEnergyFidTrack = aida.histogram1D(prependFolderName("cluster energy fid track"), 100, 0, 1.5*beamEnergy);
 
-        seedEnergy = aida.histogram1D("seed energy", 100, 0, beamEnergy);
-        seedEnergyTop = aida.histogram1D("seed energy top", 100, 0, beamEnergy);
-        seedEnergyBottom = aida.histogram1D("seed energy bottom", 100, 0, beamEnergy);
+        seedEnergy = aida.histogram1D(prependFolderName("seed energy"), 100, 0, beamEnergy);
+        seedEnergyTop = aida.histogram1D(prependFolderName("seed energy top"), 100, 0, beamEnergy);
+        seedEnergyBottom = aida.histogram1D(prependFolderName("seed energy bottom"), 100, 0, beamEnergy);
 
-        clusterVsSeedEnergy = aida.histogram2D("cluster vs seed energy", 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
-        clusterVsSeedEnergyTop = aida.histogram2D("cluster vs seed energy top", 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
-        clusterVsSeedEnergyBottom = aida.histogram2D("cluster vs seed energy bottom", 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
+        clusterVsSeedEnergy = aida.histogram2D(prependFolderName("cluster vs seed energy"), 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
+        clusterVsSeedEnergyTop = aida.histogram2D(prependFolderName("cluster vs seed energy top"), 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
+        clusterVsSeedEnergyBottom = aida.histogram2D(prependFolderName("cluster vs seed energy bottom"), 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
 
         this.nSigma = aida.histogram1D("nSigma", 200, 0, 10);
 
@@ -222,86 +225,92 @@ public class FeeHistogramDriver extends Driver{
         thetaVsPhiMomentumCut = new IHistogram2D[regionNames.length];	
         thetaVsPhi6 = new IHistogram2D[regionNames.length];
         for(int i = 0; i< regionNames.length; i++){
-            thetaVsPhi[i] = aida.histogram2D("theta vs phi" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
-            thetaVsPhiInRange[i] = aida.histogram2D("theta vs phi in range" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
-            thetaVsPhiNoTrackQualityCuts[i] = aida.histogram2D("theta vs phi no track quality cuts" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
-            thetaVsPhiChi2Cut[i] = aida.histogram2D("theta vs phi chi2 cut" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
-            thetaVsPhiTrackExtrapCut[i] = aida.histogram2D("theta vs phi track extrap cut" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
-            thetaVsPhiMomentumCut[i] = aida.histogram2D("theta vs phi chi2 momentum cut" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
-            thetaVsPhi6[i] = aida.histogram2D("theta vs phi 6 hits" + regionNames[i], nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhi[i] = aida.histogram2D(prependFolderName("theta vs phi" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhiInRange[i] = aida.histogram2D(prependFolderName("theta vs phi in range" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhiNoTrackQualityCuts[i] = aida.histogram2D(prependFolderName("theta vs phi no track quality cuts" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhiChi2Cut[i] = aida.histogram2D(prependFolderName("theta vs phi chi2 cut" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhiTrackExtrapCut[i] = aida.histogram2D(prependFolderName("theta vs phi track extrap cut" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhiMomentumCut[i] = aida.histogram2D(prependFolderName("theta vs phi chi2 momentum cut" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
+            thetaVsPhi6[i] = aida.histogram2D(prependFolderName("theta vs phi 6 hits" + regionNames[i]), nBinsPhi, 0, .2, 628, -3.14, 3.14);
 
         }
-        theta = aida.histogram1D("theta", nBinsPhi, 0, .2);
-        thetaInRange = aida.histogram1D("theta in range", nBinsPhi, 0, .2);
+        theta = aida.histogram1D(prependFolderName("theta"), nBinsPhi, 0, .2);
+        thetaInRange = aida.histogram1D(prependFolderName("theta in range"), nBinsPhi, 0, .2);
 
-        thetaTopOnly = aida.histogram1D("theta top", nBinsPhi, 0, .2);
-        thetaTopOnlyInRange = aida.histogram1D("theta top in range", nBinsPhi, 0, .2);
+        thetaTopOnly = aida.histogram1D(prependFolderName("theta top"), nBinsPhi, 0, .2);
+        thetaTopOnlyInRange = aida.histogram1D(prependFolderName("theta top in range"), nBinsPhi, 0, .2);
 
-        thetaBottomOnly = aida.histogram1D("theta bottom", nBinsPhi, 0, .2);
-        thetaBottomOnlyInRange = aida.histogram1D("theta bottom in range", nBinsPhi, 0, .2);
-        uxVsUy = aida.histogram2D("ux vs uy", 300, -.16, .24, 300, -.2, .2);
-        uxVsUyInRange = aida.histogram2D("ux vs uy in range", 300, -.16, .24, 300, -.2, .2);
-        d0VsZ0 = aida.histogram2D("d0 vs z0", 100, -5, 5, 100, -5, 5);
-        d0 = aida.histogram1D("d0", 200, -3, 3);
-        z0 = aida.histogram1D("z0", 200, -1.5, 1.5);
+        thetaBottomOnly = aida.histogram1D(prependFolderName("theta bottom"), nBinsPhi, 0, .2);
+        thetaBottomOnlyInRange = aida.histogram1D(prependFolderName("theta bottom in range"), nBinsPhi, 0, .2);
+        uxVsUy = aida.histogram2D(prependFolderName("ux vs uy"), 300, -.16, .24, 300, -.2, .2);
+        uxVsUyInRange = aida.histogram2D(prependFolderName("ux vs uy in range"), 300, -.16, .24, 300, -.2, .2);
+        d0VsZ0 = aida.histogram2D(prependFolderName("d0 vs z0"), 100, -5, 5, 100, -5, 5);
+        d0 = aida.histogram1D(prependFolderName("d0"), 200, -3, 3);
+        z0 = aida.histogram1D(prependFolderName("z0"), 200, -1.5, 1.5);
 
-        d0VsZ0_top = aida.histogram2D("d0 vs z0 top", 100, -5, 5, 100, -5, 5);
-        d0VsZ0_bottom = aida.histogram2D("d0 vs z0 bottom", 100, -5, 5, 100, -5, 5);
-
-
-        pHist = aida.histogram1D("momentum", 100, 0, 1.5*beamEnergy);
-
-        charge = aida.histogram1D("charge", 6, -3, 3);
+        d0VsZ0_top = aida.histogram2D(prependFolderName("d0 vs z0 top"), 100, -5, 5, 100, -5, 5);
+        d0VsZ0_bottom = aida.histogram2D(prependFolderName("d0 vs z0 bottom"), 100, -5, 5, 100, -5, 5);
 
 
-        timeHist = aida.histogram1D("cluster time", 400, 0, 400);
-        chi2Hist = aida.histogram1D("chi2", 200, 0, 50);
-        chi2RedHist = aida.histogram1D("chi2 red", 200, 0, 15);
-        clustSize = aida.histogram1D("cluster size", 20, 0, 20);
-        clustSizeGTP = aida.histogram1D("cluster size gtp (>55% beam energy)", 20, 0, 20);
+        pHist = aida.histogram1D(prependFolderName("momentum"), 100, 0, 1.5*beamEnergy);
 
-        z0VsTanLambda = aida.histogram2D("z0 vs tan lambda", 100, -5, 5, 100, -.1, .1);
-        z0VsChi2 = aida.histogram2D("z0 vs chi2", 100, -5, 5, 100, 0, 100);
-        nPassCutsPerEvent = aida.histogram1D("n pass cuts", 10, 0, 10);
-        nPassCutsPerEventFiducial = aida.histogram1D("n pass cuts fiducial", 10, 0, 10);
-        thetaVsMomentum = aida.histogram2D("theta vs momentum", 100, 0, .2, 100, 0, 1.2*beamEnergy);
-        thetaVsMomentumFid = aida.histogram2D("theta vs momentum fiducial", 100, 0, .2, 100, 0, 1.2*beamEnergy);
-        thetaVsEnergy = aida.histogram2D("theta vs energy", 100, 0, .2, 100, 0, 1.2*beamEnergy);
-        thetaVsEnergyFid = aida.histogram2D("theta vs energy fiducial", 100, 0, .2, 100, 0, 1.2*beamEnergy);
+        charge = aida.histogram1D(prependFolderName("charge"), 6, -3, 3);
 
 
-        dxdyAtEcal = aida.histogram2D("dxdy at ecal", 200, -20, 20, 200, -20, 20);
+        timeHist = aida.histogram1D(prependFolderName("cluster time"), 400, 0, 400);
+        chi2Hist = aida.histogram1D(prependFolderName("chi2"), 200, 0, 50);
+        chi2RedHist = aida.histogram1D(prependFolderName("chi2 red"), 200, 0, 15);
+        clustSize = aida.histogram1D(prependFolderName("cluster size"), 20, 0, 20);
+        clustSizeGTP = aida.histogram1D(prependFolderName("cluster size gtp (>55% beam energy)"), 20, 0, 20);
 
-        dxAtEcal = aida.histogram1D("dx at ecal", 200, -20, 20);
-        dyAtEcal = aida.histogram1D("dy at ecal", 200, -20, 20);
+        z0VsTanLambda = aida.histogram2D(prependFolderName("z0 vs tan lambda"), 100, -5, 5, 100, -.1, .1);
+        z0VsChi2 = aida.histogram2D(prependFolderName("z0 vs chi2"), 100, -5, 5, 100, 0, 100);
+        nPassCutsPerEvent = aida.histogram1D(prependFolderName("n pass cuts"), 10, 0, 10);
+        nPassCutsPerEventFiducial = aida.histogram1D(prependFolderName("n pass cuts fiducial"), 10, 0, 10);
+        thetaVsMomentum = aida.histogram2D(prependFolderName("theta vs momentum"), 100, 0, .2, 100, 0, 1.2*beamEnergy);
+        thetaVsMomentumFid = aida.histogram2D(prependFolderName("theta vs momentum fiducial"), 100, 0, .2, 100, 0, 1.2*beamEnergy);
+        thetaVsEnergy = aida.histogram2D(prependFolderName("theta vs energy"), 100, 0, .2, 100, 0, 1.2*beamEnergy);
+        thetaVsEnergyFid = aida.histogram2D(prependFolderName("theta vs energy fiducial"), 100, 0, .2, 100, 0, 1.2*beamEnergy);
 
-        dxVsNcols = aida.histogram2D("dx at ecal vs ncols", 200,-20, 20, 5, 0,5);
-        dyVsNrows = aida.histogram2D("dy at ecal vs nrows", 200,-20, 20, 5, 0,5);
-        chi2_vs_theta = aida.histogram2D("chi2 vs theta", 100, 0,  50, 100, 0, .2);
-        nFidTopVsBot = aida.histogram2D("n fid top vs bottom", 5, 0, 5, 5, 0, 5);
-        nClustTopVsBot = aida.histogram2D("n fee clust top vs bottom", 5, 0, 5, 5, 0, 5);
+
+        dxdyAtEcal = aida.histogram2D(prependFolderName("dxdy at ecal"), 200, -20, 20, 200, -20, 20);
+
+        dxAtEcal = aida.histogram1D(prependFolderName("dx at ecal"), 200, -20, 20);
+        dyAtEcal = aida.histogram1D(prependFolderName("dy at ecal"), 200, -20, 20);
+
+        dxVsNcols = aida.histogram2D(prependFolderName("dx at ecal vs ncols"), 200,-20, 20, 5, 0,5);
+        dyVsNrows = aida.histogram2D(prependFolderName("dy at ecal vs nrows"), 200,-20, 20, 5, 0,5);
+        chi2_vs_theta = aida.histogram2D(prependFolderName("chi2 vs theta"), 100, 0,  50, 100, 0, .2);
+        nFidTopVsBot = aida.histogram2D(prependFolderName("n fid top vs bottom"), 5, 0, 5, 5, 0, 5);
+        nClustTopVsBot = aida.histogram2D(prependFolderName("n fee clust top vs bottom"), 5, 0, 5, 5, 0, 5);
 
 
-        twoFeeClustX_tb = aida.histogram2D("2 cluster x top vs bot", 140, -300, 400, 140, -300, 400);
-        twoFeeClustX_bb = aida.histogram2D("2 cluster x bot vs bot", 140, -300, 400, 140, -300, 400);
-        twoFeeClustX_tt = aida.histogram2D("2 cluster x top vs top", 140, -300, 400, 140, -300, 400);
+        twoFeeClustX_tb = aida.histogram2D(prependFolderName("2 cluster x top vs bot"), 140, -300, 400, 140, -300, 400);
+        twoFeeClustX_bb = aida.histogram2D(prependFolderName("2 cluster x bot vs bot"), 140, -300, 400, 140, -300, 400);
+        twoFeeClustX_tt = aida.histogram2D(prependFolderName("2 cluster x top vs top"), 140, -300, 400, 140, -300, 400);
 
-        twoFeeClustDX_tb = aida.histogram1D("2 cluster dx top vs bot", 280, -700, 700);
-        twoFeeClustDX_bb = aida.histogram1D("2 cluster dx bot vs bot", 280, -700, 700);
-        twoFeeClustDX_tt = aida.histogram1D("2 cluster dx top vs top", 280, -700, 700);
+        twoFeeClustDX_tb = aida.histogram1D(prependFolderName("2 cluster dx top vs bot"), 280, -700, 700);
+        twoFeeClustDX_bb = aida.histogram1D(prependFolderName("2 cluster dx bot vs bot"), 280, -700, 700);
+        twoFeeClustDX_tt = aida.histogram1D(prependFolderName("2 cluster dx top vs top"), 280, -700, 700);
 
-        twoFeeTrackDphi_tb = aida.histogram1D("2 track dphi top vs bot", 200, -.3, .3);
-        twoFeeTrackDphi_bb = aida.histogram1D("2 track dphi bot vs bot", 200, -.3, .3);
-        twoFeeTrackDphi_tt = aida.histogram1D("2 track dphi top vs top", 200, -.3, .3);
+        twoFeeTrackDphi_tb = aida.histogram1D(prependFolderName("2 track dphi top vs bot"), 200, -.3, .3);
+        twoFeeTrackDphi_bb = aida.histogram1D(prependFolderName("2 track dphi bot vs bot"), 200, -.3, .3);
+        twoFeeTrackDphi_tt = aida.histogram1D(prependFolderName("2 track dphi top vs top"), 200, -.3, .3);
 
         
-        feeClustXY = aida.histogram2D("fee clust xy", 140, -300, 400, 100, -100, 100);
-        w_carbon = aida.histogram1D("w carbon", 100, 9, 13);
+        feeClustXY = aida.histogram2D(prependFolderName("fee clust xy"), 140, -300, 400, 100, -100, 100);
+        w_carbon = aida.histogram1D(prependFolderName("w carbon"), 100, 9, 13);
         
-        w_tungsten = aida.histogram1D("w tungsten", 100, 160, 180);
+        w_tungsten = aida.histogram1D(prependFolderName("w tungsten"), 100, 160, 180);
     }
 
-
+    private String prependFolderName(String histName){
+        if(folder == null){
+            return histName;
+        }
+        return folder + "/" + histName;
+    }
+    
     IHistogram2D uxVsUy, uxVsUyInRange;
 
     IHistogram1D pHist;
@@ -324,7 +333,7 @@ public class FeeHistogramDriver extends Driver{
     private IHistogram2D dyVsNrows;
     private IHistogram1D nSigma;
     private IHistogram2D[] thetaVsPhi6;
-    private double nSigmaCut = 4;
+    private double nSigmaCut = 5;
     private boolean useLowestPrescale = true;
 
     public void setNSigmaCut(double val){
