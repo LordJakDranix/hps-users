@@ -29,6 +29,10 @@ import static java.lang.Math.*;
 
 public class FeeHistogramDriver extends Driver{
     public String folder = null;
+    
+    public void setFolderName(String folder){
+        this.folder = folder;
+    }
     private static final double amu = 0.931494095;
     private static final double  Mcarbon = amu*12;
     private static final double Mtungsten = amu*183.84;
