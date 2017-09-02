@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.hps.conditions.ConditionsDriver;
+//import org.hps.conditions.ConditionsDriver;
 import org.hps.users.spaul.fee_old.CustomBinning;
 import org.hps.users.spaul.fee_old.RemoveDuplicateParticles;
 import org.lcsim.event.EventHeader;
@@ -35,12 +35,12 @@ public class MakeMassHistogram {
         IHistogramFactory hf = af.createHistogramFactory(tree);
         setupHistograms(tree, hf);
 
-        ConditionsDriver hack = new ConditionsDriver();
+        //ConditionsDriver hack = new ConditionsDriver();
         //hack.setXmlConfigResource("/u/group/hps/hps_soft/detector-data/detectors/HPS-EngRun2015-Nominal-v3");
-        hack.setDetectorName("HPS-PhysicsRun2016-2pt2-v0");
-        hack.setFreeze(true);
-        hack.setRunNumber(Integer.parseInt(arg[2]));
-        hack.initialize();
+        //hack.setDetectorName("HPS-PhysicsRun2016-2pt2-v0");
+        //hack.setFreeze(true);
+        //hack.setRunNumber(Integer.parseInt(arg[2]));
+        //hack.initialize();
         File file = new File(input);
         File inputs[] = new File[]{file};
         if(file.isDirectory()){

@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.hps.conditions.ConditionsDriver;
+//import org.hps.conditions.ConditionsDriver;
 import org.hps.recon.tracking.TrackType;
 import org.hps.record.triggerbank.AbstractIntData;
 import org.hps.record.triggerbank.TIData;
@@ -68,13 +68,12 @@ public class MakeHistograms {
             if(display){
                 setupPlotter(af);
             }
-            ConditionsDriver hack = new ConditionsDriver();
+            //ConditionsDriver hack = new ConditionsDriver();
             //hack.setXmlConfigResource("/u/group/hps/hps_soft/detector-data/detectors/HPS-EngRun2015-Nominal-v3");
-            hack.setDetectorName("HPS-EngRun2015-Nominal-v3");
-            hack.setFreeze(true);
-            hack.setRunNumber(Integer.parseInt(arg[3]));
-            
-            hack.initialize();
+            //hack.setDetectorName("HPS-EngRun2015-Nominal-v3");
+            //hack.setFreeze(true);
+            //hack.setRunNumber(Integer.parseInt(arg[3]));
+            //hack.initialize();
             beamTiltY = Double.parseDouble(arg[4]);
             beamTiltX = Double.parseDouble(arg[5]);
             LCIOReader reader = new LCIOReader(new File(input));

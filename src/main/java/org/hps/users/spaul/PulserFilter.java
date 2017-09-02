@@ -13,7 +13,7 @@ import org.lcsim.event.GenericObject;
 import org.lcsim.lcio.LCIOReader;
 import org.lcsim.lcio.LCIOWriter;
 import org.lcsim.util.Driver;
-import org.hps.conditions.ConditionsDriver;
+//import org.hps.conditions.ConditionsDriver;
 import org.hps.recon.ecal.cluster.ClusterUtilities;
 //import org.hps.recon.ecal.triggerbank.AbstractIntData;
 //import org.hps.recon.ecal.triggerbank.TIData;
@@ -55,11 +55,11 @@ public class PulserFilter extends Driver{
     }
 
     public static void main(String arg[]) throws IOException{
-        ConditionsDriver hack = new ConditionsDriver();
-        hack.setDetectorName("HPS-EngRun2015-Nominal-v1");
-        hack.setFreeze(true);
-        hack.setRunNumber(Integer.parseInt(arg[2]));
-        hack.initialize();
+        //ConditionsDriver hack = new ConditionsDriver();
+        //hack.setDetectorName("HPS-EngRun2015-Nominal-v1");
+        //hack.setFreeze(true);
+        //hack.setRunNumber(Integer.parseInt(arg[2]));
+        //hack.initialize();
         PulserFilter pf = new PulserFilter();
         LCIOWriter writer = new LCIOWriter(arg[1]);
         File file = new File(arg[0]);
