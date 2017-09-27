@@ -1,0 +1,21 @@
+ <lcsim xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+       xs:noNamespaceSchemaLocation="http://www.lcsim.org/schemas/lcsim/1.0/lcsim.xsd">
+    <execute>
+        <driver name="EventMarkerDriver"/>
+        <driver name="LCIOSkimmer"/>
+        <driver name="LCIOWriter"/>
+    </execute>
+    <drivers>
+        <driver name="EventMarkerDriver" type="org.lcsim.job.EventMarkerDriver">
+            <eventInterval>1000</eventInterval>
+        </driver>
+        <driver name="LCIOSkimmer" type="org.hps.users.mrsolt.GeneralLcioEventSkimmer">
+            <zMax>0</zMax>
+	    <massMin>0.04</massMin>
+	    <massMax>0.05</massMax>
+        </driver>
+        <driver name="LCIOWriter" type="org.lcsim.util.loop.LCIODriver">
+            <outputFilePath>${outputFile}</outputFilePath>
+        </driver>
+    </drivers>
+</lcsim>
