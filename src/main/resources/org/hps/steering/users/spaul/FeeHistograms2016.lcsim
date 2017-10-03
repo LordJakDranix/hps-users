@@ -10,8 +10,10 @@
         <driver name="EventFlagFilter"/>
         <driver name="TriggerFilter"/>
         
+        <driver name="RawTrackerHitSensorSetup"/>
          <!-- Rerun recon particle driver-->
         <driver name="TrackTweakDriver" />
+        <driver name="CopyCluster" />
         <driver name="ReconParticleDriver" />
         
         <driver name="FeeHistograms"/>
@@ -30,6 +32,9 @@
         	<!-- All flags except for the latency flag -->
         	<flagNames>svt_bias_good svt_burstmode_noise_good svt_event_header_good svt_position_good</flagNames>
         </driver>
+        <driver name="RawTrackerHitSensorSetup" type="org.lcsim.recon.tracking.digitization.sisim.config.RawTrackerHitSensorSetup">
+            <readoutCollections>SVTRawTrackerHits</readoutCollections>
+        </driver>
        
         <driver name="TrackTweakDriver"    type="org.hps.recon.tracking.TrackTweakDriver" >
             <topOmegaCorrection>0</topOmegaCorrection>
@@ -41,6 +46,7 @@
             <topZ0Correction>0</topZ0Correction>
             <botZ0Correction>0</botZ0Correction>
             <removeCollections>
+            	EcalClustersCorr
                 FinalStateParticles
                 UnconstrainedV0Candidates 
                 UnconstrainedV0Vertices
@@ -56,10 +62,13 @@
                 BeamspotConstrainedMollerVertices
             </removeCollections>
         </driver> 
+         <driver name="CopyCluster" type="org.hps.recon.ecal.cluster.CopyClusterCollectionDriver">
+            <inputCollectionName>EcalClusters</inputCollectionName>
+            <outputCollectionName>EcalClustersCorr</outputCollectionName>
+        </driver>
         <driver name="ReconParticleDriver" type="org.hps.recon.particle.HpsReconParticleDriver" > 
             <ecalClusterCollectionName>EcalClustersCorr</ecalClusterCollectionName>        
             <trackCollectionNames>GBLTracks</trackCollectionNames>
-            <disablePID>true</disablePID>
         </driver>
        	<driver name="FeeHistograms" type="org.hps.users.spaul.fee.FeeHistogramDriver">
        		<binning>24
@@ -98,6 +107,7 @@
         <seedEnergyCutFrac>0</seedEnergyCutFrac>
         <d0Cut>1.5</d0Cut>
         <eMinFrac>.85</eMinFrac>
+        <eMaxFrac>1e7</eMaxFrac>
         <folderName>85_percent</folderName>
         </driver>
         <driver name="FeeHistogramsTight" type="org.hps.users.spaul.fee.FeeHistogramDriver">
@@ -137,6 +147,7 @@
         <seedEnergyCutFrac>0</seedEnergyCutFrac>
         <d0Cut>1.5</d0Cut>
         <eMinFrac>.87</eMinFrac>
+        <eMaxFrac>1e7</eMaxFrac>
         <folderName>87_percent</folderName>
         </driver>
         <driver name="FeeHistogramsLoose" type="org.hps.users.spaul.fee.FeeHistogramDriver">
@@ -176,6 +187,7 @@
         <seedEnergyCutFrac>0</seedEnergyCutFrac>
         <d0Cut>1.5</d0Cut>
         <eMinFrac>.83</eMinFrac>
+        <eMaxFrac>1e7</eMaxFrac>
         <folderName>83_percent</folderName>
         </driver>
          <driver name="AidaSaveDriver" type="org.lcsim.job.AidaSaveDriver">

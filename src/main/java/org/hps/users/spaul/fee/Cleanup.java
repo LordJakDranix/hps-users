@@ -45,32 +45,32 @@ public class Cleanup {
 		}
 		particles.removeAll(trashcan);
 		if(test){
-		for(ReconstructedParticle p1 : particles){
-		    for(ReconstructedParticle p2 : particles){
-		        if(p1 != p2 && p1.getClusters().get(0) == p2.getClusters().get(0)){
-		            System.out.println("racoons are unhappy");
+		    for(ReconstructedParticle p1 : particles){
+		        for(ReconstructedParticle p2 : particles){
+		            if(p1 != p2 && p1.getClusters().get(0) == p2.getClusters().get(0)){
+		                System.out.println("racoons are unhappy");
+		                System.exit(0);
+		            }
+		        }
+		        //System.out.println(p1.getClusters().get(0).getPosition()[1]);
+		    }
+		    if(particles.size() != clusters.size()){
+		        System.out.println("racoons are getting fat off extra particles");
+		        System.exit(0);
+		    }
+
+		    for(Cluster c: clusters){
+		        int found = 0;
+		        for(ReconstructedParticle p : particles){
+		            if(c == p.getClusters().get(0))
+		                found ++;
+		        }
+		        if(found != 1){
+		            System.out.println("racoons have been cloning themselves or killing each other.  I don't know which");
 		            System.exit(0);
 		        }
+
 		    }
-		    //System.out.println(p1.getClusters().get(0).getPosition()[1]);
-		}
-		if(particles.size() != clusters.size()){
-		    System.out.println("racoons are getting fat off extra particles");
-            System.exit(0);
-		}
-		
-		for(Cluster c: clusters){
-		    int found = 0;
-		    for(ReconstructedParticle p : particles){
-		        if(c == p.getClusters().get(0))
-		            found ++;
-		    }
-		    if(found != 1){
-		        System.out.println("racoons have been cloning themselves or killing each other.  I don't know which");
-	            System.exit(0);
-	        }
-		    
-		}
 		}
 	}
 	public static boolean test = true;
@@ -87,22 +87,29 @@ public class Cleanup {
 		if(p2.getTracks().size() == 0 && p1.getTracks().size() == 1)
 			return p2;
 		
-		Track t1 = p1.getTracks().get(0);
-		Track t2 = p2.getTracks().get(0);
+		//Track t1 = p1.getTracks().get(0);
+		//Track t2 = p2.getTracks().get(0);
+		
+		
+		if(p1.getGoodnessOfPID() > p2.getGoodnessOfPID())
+		    return p1;
+		else
+		    return p2;
+		
 		
 		
 		//first see if there is some clue that one of the tracks is better than the other:
-		if(Math.abs(TrackUtils.getDoca(t1))>1 && Math.abs(TrackUtils.getDoca(t2))<1)
+		/*if(Math.abs(TrackUtils.getDoca(t1))>1 && Math.abs(TrackUtils.getDoca(t2))<1)
 			return p2;
 		if(Math.abs(TrackUtils.getDoca(t2))>1 && Math.abs(TrackUtils.getDoca(t1))<1)
-			return p1;
+			return p1;*/
 		
 		//if they are both ok, use the one with the track that extrapolates closes to the cluster.  
-		if(Math.hypot(FeeHistogramDriver.getDx(p1), FeeHistogramDriver.getDy(p1))
+		/*if(Math.hypot(FeeHistogramDriver.getDx(p1), FeeHistogramDriver.getDy(p1))
 				< Math.hypot(FeeHistogramDriver.getDx(p2), FeeHistogramDriver.getDy(p2)))
 			return p2;
 		return p1;
-		
+		*/
 		
 		//if they are both ok, then just use whichever one has the smaller chi2
 		//if(p1.getTracks().get(0).getChi2() < p2.getTracks().get(0).getChi2())

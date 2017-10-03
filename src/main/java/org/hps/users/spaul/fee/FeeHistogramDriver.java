@@ -85,7 +85,7 @@ public class FeeHistogramDriver extends Driver{
         this.eMinFrac = val;
     }
 
-    public void setEMax(double val){
+    public void setEMaxFrac(double val){
         this.eMaxFrac = val;
     }
     
@@ -113,7 +113,7 @@ public class FeeHistogramDriver extends Driver{
     double beamTiltX = .0295;
     double beamTiltY = -.0008;
 
-    double maxChi2 = 30;
+    double maxChi2 = 40;
     //maximum difference between the reconstructed energy and momentum
     //double maxdE = .5;
     int nMin = 3;
@@ -146,7 +146,7 @@ public class FeeHistogramDriver extends Driver{
         eMax = eMaxFrac*beamEnergy;
 
         pMin = pMinFrac*beamEnergy;
-        pMax = pMinFrac*beamEnergy;
+        pMax = pMaxFrac*beamEnergy;
 
         seedEnergyCut = seedEnergyCutFrac *beamEnergy; 
         setupHistograms();
@@ -215,7 +215,7 @@ public class FeeHistogramDriver extends Driver{
         clusterVsSeedEnergyTop = aida.histogram2D(prependFolderName("cluster vs seed energy top"), 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
         clusterVsSeedEnergyBottom = aida.histogram2D(prependFolderName("cluster vs seed energy bottom"), 100, 0, 1.5*beamEnergy, 100, 0, beamEnergy);
 
-        this.nSigma = aida.histogram1D("nSigma", 200, 0, 10);
+        this.nSigma = aida.histogram1D(prependFolderName("nSigma"), 200, 0, 10);
 
         int nBinsPhi = 400;
 

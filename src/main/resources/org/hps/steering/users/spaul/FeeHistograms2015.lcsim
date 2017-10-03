@@ -58,6 +58,7 @@
         <useSSPcut>false</useSSPcut>
         <seedEnergyCutFrac>0</seedEnergyCutFrac>
         <eMinFrac>.85</eMinFrac>
+        <eMaxFrac>1e7</eMaxFrac>
         <folderName>85_percent</folderName>
         </driver>
         <driver name="FeeHistogramsTight" type="org.hps.users.spaul.fee.FeeHistogramDriver">
@@ -93,6 +94,7 @@
         <useSSPcut>false</useSSPcut>
         <seedEnergyCutFrac>0</seedEnergyCutFrac>
         <eMinFrac>.87</eMinFrac>
+        <eMaxFrac>1e7</eMaxFrac>
         <folderName>87_percent</folderName>
         </driver>
         <driver name="FeeHistogramsLoose" type="org.hps.users.spaul.fee.FeeHistogramDriver">
@@ -128,6 +130,7 @@
         <useSSPcut>false</useSSPcut>
         <seedEnergyCutFrac>0</seedEnergyCutFrac>
         <eMinFrac>.83</eMinFrac>
+        <eMaxFrac>1e7</eMaxFrac>
         <folderName>83_percent</folderName>
         </driver>
          <driver name="AidaSaveDriver" type="org.lcsim.job.AidaSaveDriver">
