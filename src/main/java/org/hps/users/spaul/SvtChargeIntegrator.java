@@ -431,6 +431,8 @@ public class SvtChargeIntegrator {
 						// if no file is specified, then attenuation = 1 and zeropoint = 0.
 						double current = (thisCurrent -zeropoint)/906.2;
 						
+						//check if the current is a reasonable value.  If not,
+						// then this is the time when the beam blocker was removed.  
 						if(current*attenuation<1000){ 
 						    // during the time when the beam blocker was removed,
 						    // do not correct for attenuation. 
